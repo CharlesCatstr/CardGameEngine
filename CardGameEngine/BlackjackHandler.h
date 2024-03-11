@@ -1,4 +1,6 @@
 #pragma once
+
+
 class BlackjackHandler
 {
 private:
@@ -8,6 +10,11 @@ private:
 public:
 
     BlackjackHandler();
+
+    int GetBlackjackRoundResult(int PlayerTotal, int DealerTotal);
+
+
+
 
 };
 

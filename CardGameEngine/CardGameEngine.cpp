@@ -29,6 +29,8 @@ Player RealPlayer       = Player();
 
 bool LastCardDrawnFromAdditional = false;
 
+/* Old and obsolete, replaced by method inside player class
+
 int GetHandTotal(vector<Card> InHand) {
     // Keep count of how many aces there are so we can account for some aces being worth 1 and some being 11
     int AceCount    = 0;
@@ -64,6 +66,7 @@ int GetHandTotal(vector<Card> InHand) {
     }
     return Total;
 }
+*/
 
 int GetBlackjackRoundResult(int PlayerTotal, int DealerTotal) {
     if (PlayerTotal == 21 and DealerTotal == 21) {
@@ -275,8 +278,8 @@ int PlayBlackjack() {
 
     // Give player choices if their total is not 21
 
-    int PlayerTotal = GetHandTotal(RealPlayer.GetPlayerHand());
-    int DealerTotal = GetHandTotal(HouseDealer.GetPlayerHand());
+    int PlayerTotal = RealPlayer.GetHandTotal();
+    int DealerTotal = HouseDealer.GetHandTotal();
 
     cout << "\n: Your total: " << PlayerTotal << "\n";
     cout << ": Dealer total: " << DealerTotal << "\n\n";
@@ -304,8 +307,8 @@ int PlayBlackjack() {
 
                 // Give player choices if their total is not 21
 
-                PlayerTotal = GetHandTotal(RealPlayer.GetPlayerHand());
-                DealerTotal = GetHandTotal(HouseDealer.GetPlayerHand());
+                PlayerTotal = RealPlayer.GetHandTotal();
+                DealerTotal = HouseDealer.GetHandTotal();
 
                 PlayerHasBlackjack = PlayerTotal == 21;
                 DealerHasBlackjack = DealerTotal == 21;
@@ -344,22 +347,25 @@ int PlayBlackjack() {
 
         cout << "\nThe Dealer is playing...\n";
 
+        // Dealer makes their choice (basically stands (returns 2) if 17 or above)
         DealerChoice = HouseDealer.MakeBlackjackDecision();
 
         if (DealerChoice == 1) {
+            // Draw next card and add to dealer's hand
             Card NextDrawnCard = BlackjackDrawCardHelper();
 
             HouseDealer.AddCardToHand(NextDrawnCard);
 
-            PlayerTotal = GetHandTotal(RealPlayer.GetPlayerHand());
-            DealerTotal = GetHandTotal(HouseDealer.GetPlayerHand());
-
+            PlayerTotal = RealPlayer.GetHandTotal();
+            DealerTotal = HouseDealer.GetHandTotal();
+            
+            // Display the dealer and player cards
             DisplayAllPlayersHands();
         }
         else {
 
             cout << "\nThe Dealer is standing.\n";
-
+            // make dealer stand
             DealerHasStood = true;
         }
 
@@ -438,9 +444,9 @@ Card BlackjackDrawCardHelper() {
 }
 
 int BlackjackPlayerChoice() {
-
+    // Display player choices
     cout << BlackjackUserChoiceDescription;
-
+    // Get player's choice
     string PlayerChoiceInput;
     getline(cin, PlayerChoiceInput);
 
