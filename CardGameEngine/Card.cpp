@@ -26,3 +26,4 @@ int Card::GetValue() {
 Suit Card::GetSuit() {
 	return CardSuit;
 };
+
