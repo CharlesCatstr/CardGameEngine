@@ -1,20 +1,33 @@
 #pragma once
 
+#include "Card.h"
+#include <iostream>
+#include <string>
+#include "Deck.h"
+#include "Player.h"
+#include "Dealer.h"
+#include "CardGameDrawer.h"
 
 class BlackjackHandler
 {
 private:
 
-
+    bool LastDrawFromAdditional;
+    CardGameDrawer Drawer;
 
 public:
 
-    BlackjackHandler();
+    BlackjackHandler(CardGameDrawer Drawer);
+
+    int PlayBlackjack(Deck StandardDeck, Deck AdditionalDeck, Player RealPlayer, Dealer HouseDealer);
 
     int GetBlackjackRoundResult(int PlayerTotal, int DealerTotal);
+    int GetWinRoundResult(int PlayerTotal, int DealerTotal);
+    
+    Card BlackjackDrawCardHelper(Deck StandardDeck, Deck AdditionalDeck);
+    void DisplayAllPlayersHands(Player RealPlayer, Dealer HouseDealer);
 
-
-
+    int BlackjackPlayerChoice();
 
 };
 
