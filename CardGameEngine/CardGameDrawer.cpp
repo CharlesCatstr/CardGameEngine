@@ -21,12 +21,20 @@ string CardGameDrawer::GetEmptyTemplate() {
 	return EmptyTemplate;
 }
 
+string CardGameDrawer::GetDeckCounterTemplate() {
+	return DeckCounterTemplate;
+}
+
 int CardGameDrawer::GetTemplateLineCount() {
 	return TemplateLineCount;
 }
 
 string CardGameDrawer::GetCardWidthAsWhitespace() {
 	return CardWidthAsWhitespace;
+}
+
+string CardGameDrawer::GetBaronessRowHeadingTemplate() {
+	return BaronessRowHeadingTemplate;
 }
 
 string CardGameDrawer::FormatCard(Suit cardSuit, int cardValue) {
@@ -139,7 +147,39 @@ string CardGameDrawer::FormatPile(Pile givenPile) {
 	return formattedPile;
 }
 
-string CardGameDrawer::FormatMultiplePiles(vector<Pile> pilesToFormat) {
+string CardGameDrawer::FormatBaroness(vector<Pile> pilesToFormat, int deckRemainingCards) {
+
+	// Firstly, cout the row headings so that the player knows which pile is which, as well as additional formatting with breaks using #'s and ='s
+
+	int currentColumnIndex = 0; // We have the retrieve more cards option be "0" so that it is further away from the other number inputs 1-n to prevent accidentally retrieving 5 more cards
+	string formattedHeader = ReplaceString(
+		GetBaronessRowHeadingTemplate(),
+		"X",
+		to_string(currentColumnIndex) // https://stackoverflow.com/questions/5590381/how-to-convert-int-to-string-in-c
+	);
+	// Needs an extra bit of whitespace
+	formattedHeader.append("  ");
+
+	for (Pile nextPile : pilesToFormat) {
+		currentColumnIndex++;
+		formattedHeader.append(ReplaceString(
+			GetBaronessRowHeadingTemplate(),
+			"X",
+			to_string(currentColumnIndex) // https://stackoverflow.com/questions/5590381/how-to-convert-int-to-string-in-c
+		));
+	}
+
+	// cout the divider based on the number of piles, the deck counter, and how many characters are required for the width of each
+
+	cout << formattedHeader << "\n";
+
+	for (int i = 0; i < pilesToFormat.size() + 1; i++) {
+		for (int j = 0; j < GetCardWidthAsWhitespace().length() + CardDisplaySpacing.length(); j++) {
+			cout << "=";
+		}
+	}
+	// Account for the extra whitespace we added earlier (plus one extra because it looks more symmetrical this way)
+	cout << "===\n";
 
 	// Essentially identical to the FormatMultipleCards method, but with checks for non-uniform formatted pile height
 
@@ -147,8 +187,32 @@ string CardGameDrawer::FormatMultiplePiles(vector<Pile> pilesToFormat) {
 
 	// Go through all piles, split, and store
 
-	// Keep track of the highest number of rows from a formatted pile (default to the height of one card)
-	int highestRowCount = GetTemplateLineCount();
+	// Keep track of the highest number of rows from a formatted pile
+	int highestRowCount;
+
+
+	// First, format the deck counter and separator
+
+	string deckCountAsString = to_string(deckRemainingCards); 
+
+	// Add whitespace if single digit so that the formatting is consistent
+
+	if (deckRemainingCards < 10) {
+		deckCountAsString.append(" ");
+	}
+
+	string formattedDeckCounter = ReplaceString(
+		GetDeckCounterTemplate(),
+		"X",
+		deckCountAsString
+	);
+
+	vector<string> deckCountAsLines = SplitString(formattedDeckCounter, '\n');
+	// ' instead of " denotes char over string literal
+	storedSplitPiles.push_back(deckCountAsLines);
+
+	// Set highestRowCount to the number of rows in the deckCounter for now
+	highestRowCount = deckCountAsLines.size();
 
 	for (Pile nextPile : pilesToFormat) {
 		string nextPileAsString = FormatPile(nextPile);

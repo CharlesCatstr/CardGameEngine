@@ -36,6 +36,28 @@ class CardGameDrawer
 
 	string CardWidthAsWhitespace = "       ";
 
+	string BaronessRowHeadingTemplate = "   [X]   #";
+
+	string DeckCounterTemplate =
+		R"( _____   #
+|     |  #
+|     |  #
+| X  |  #
+|     |  #
+|_____|  #
+         #
+ CARDS   #
+ LEFT    #
+         #
+         #
+         #
+         #
+         #
+         #
+         #
+         #
+)";
+
 	int TemplateLineCount = -1; // Gets recalculated on construct
 
 public:
@@ -45,8 +67,10 @@ public:
 	string GetTemplate();
 	string GetStackTemplate();
 	string GetEmptyTemplate();
-	int GetTemplateLineCount();
+	string GetDeckCounterTemplate();
+	string GetBaronessRowHeadingTemplate();
 	string GetCardWidthAsWhitespace();
+	int GetTemplateLineCount();
 
 	string FormatCard(Card& GivenCard, bool isStacked);
 	string FormatCard(Suit CardSuit, int CardValue, bool IsStacked);
@@ -54,6 +78,6 @@ public:
 	string FormatCard(Card& GivenCard);
 	string FormatMultipleCards(vector<Card> CardsToFormat);
 	string FormatPile(Pile);
-	string FormatMultiplePiles(vector<Pile>);
+	string FormatBaroness(vector<Pile> pilesToFormat, int deckRemainingCards);
 
 };

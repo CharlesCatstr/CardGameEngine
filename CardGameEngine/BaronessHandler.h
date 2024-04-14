@@ -11,6 +11,8 @@ class BaronessHandler
 	vector<Pile> allPiles;
 	CardGameDrawer drawer;
 
+	bool gameIsActive;
+
 	Deck activeDeck;
 
 public:
@@ -19,7 +21,12 @@ public:
 	BaronessHandler(CardGameDrawer& inDrawer, Deck& standardDeck);
 
 	int PlayBaroness(Player& realPlayer);
+	bool IsGameActive();
+	void SetGameActive(bool isActive);
 	void AppendAllPiles();
 
+	void UserSelectThirteenCards();
+	void DisplayActions();
+	int GetUserAction(vector<string> validOptions);
 };
 
