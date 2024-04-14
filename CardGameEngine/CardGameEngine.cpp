@@ -167,7 +167,7 @@ int main()
         while (not PlayerInputValid) {
             cout << "\n> ";
             getline(cin, PlayerInput);
-            PlayerInputValid = (PlayerInput == "1" or PlayerInput == "2");
+            PlayerInputValid = (PlayerInput == "1" or PlayerInput == "2" or PlayerInput == "3");
 
             if (not PlayerInputValid) {
                 cout << "\nIncorrect selection! Please enter a value from the options provided.\n";
@@ -178,6 +178,7 @@ int main()
            Blackjack.PlayBlackjack(StandardDeck, AdditionalDeck, RealPlayer, HouseDealer);
         }
         else if (PlayerInput == "2") {
+            cout << "Solitaire: PASS\n";
             //PlaySolitaire();
         }
         else if (PlayerInput == "3") {

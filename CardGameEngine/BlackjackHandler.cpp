@@ -7,13 +7,13 @@
 using namespace std;
 
 
-BlackjackHandler::BlackjackHandler(CardGameDrawer InDrawer) {
+BlackjackHandler::BlackjackHandler(CardGameDrawer& InDrawer) {
     Drawer = InDrawer;
 }
 
 int BlackjackHandler::GetBlackjackRoundResult(int PlayerTotal, int DealerTotal) {
     if (PlayerTotal == 21 and DealerTotal == 21) {
-        cout << "Push! (You and the dealer both have Blackjack)\nNo one wins";
+        cout << "Push! (You and the dealer both have Blackjack)\nNo one wins\n";
         return 0;
     }
     else if (DealerTotal == 21) {
@@ -47,7 +47,7 @@ int BlackjackHandler::BlackjackPlayerChoice() {
     }
 }
 
-int BlackjackHandler::PlayBlackjack(Deck StandardDeck, Deck AdditionalDeck, Player RealPlayer, Dealer HouseDealer) {
+int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Player& RealPlayer, Dealer& HouseDealer) {
 
     cout << "\n" << BlackjackAsciiTitle;
 
@@ -199,11 +199,29 @@ int BlackjackHandler::PlayBlackjack(Deck StandardDeck, Deck AdditionalDeck, Play
 
         //cout << "\nBJRR: " << BlackjackRoundResult << ", WRR: " << WinRoundResult << "\n";
 
-
         if (not (BlackjackRoundResult == -1 and WinRoundResult == -1)) {
             // End game, as blackjack was met or someone went bust
 
             return 0;
+        }
+        else {
+            // Also output who won if there wasn't a bust or a blackjack (whoever scored higher)
+
+            if (BlackjackRoundResult == -1 and WinRoundResult == -1) {
+                
+                if (PlayerTotal > DealerTotal) {
+                    cout << "\nPlayer has a higher total, Player wins!\n\n";
+                }
+                else if (PlayerTotal < DealerTotal) {
+                    cout << "\Dealer has a higher total, Dealer wins!\n\n";
+                }
+                else {
+                    cout << "\nPush! Both players have the same total!\n\n";
+                }
+
+                return 0;
+            }
+
         }
 
     }
@@ -240,7 +258,7 @@ int BlackjackHandler::GetWinRoundResult(int PlayerTotal, int DealerTotal) {
     }
 }
 
-Card BlackjackHandler::BlackjackDrawCardHelper(Deck StandardDeck, Deck AdditionalDeck) {
+Card BlackjackHandler::BlackjackDrawCardHelper(Deck& StandardDeck, Deck& AdditionalDeck) {
     // Helper function to draw from both decks evenly, 
     // by swapping which deck is in use each time
 

@@ -17,14 +17,14 @@ private:
 
 public:
 
-    BlackjackHandler(CardGameDrawer Drawer);
+    BlackjackHandler(CardGameDrawer& Drawer);
 
-    int PlayBlackjack(Deck StandardDeck, Deck AdditionalDeck, Player RealPlayer, Dealer HouseDealer);
+    int PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Player& RealPlayer, Dealer& HouseDealer);
 
     int GetBlackjackRoundResult(int PlayerTotal, int DealerTotal);
     int GetWinRoundResult(int PlayerTotal, int DealerTotal);
     
-    Card BlackjackDrawCardHelper(Deck StandardDeck, Deck AdditionalDeck);
+    Card BlackjackDrawCardHelper(Deck& StandardDeck, Deck& AdditionalDeck); // Pass by reference so that the card actually gets removed from the deck instead of a copy of the deck
     void DisplayAllPlayersHands(Player RealPlayer, Dealer HouseDealer);
 
     int BlackjackPlayerChoice();
