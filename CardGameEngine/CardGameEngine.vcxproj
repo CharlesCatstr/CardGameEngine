@@ -127,19 +127,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaronessHandler.cpp" />
     <ClCompile Include="BlackjackHandler.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CardGameDrawer.cpp" />
     <ClCompile Include="CardGameEngine.cpp" />
     <ClCompile Include="Dealer.cpp" />
+    <ClCompile Include="Pile.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Deck.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaronessHandler.h" />
     <ClInclude Include="BlackjackHandler.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardGameDrawer.h" />
     <ClInclude Include="Dealer.h" />
+    <ClInclude Include="Pile.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Deck.h" />
     <ClInclude Include="Resources.h" />

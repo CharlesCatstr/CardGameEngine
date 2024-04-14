@@ -1,6 +1,7 @@
 #include "CardGameDrawer.h";
 #include "Resources.h";
 #include "Card.h";
+#include <string>;
 #include <iostream>;
 
 CardGameDrawer::CardGameDrawer() {
@@ -12,24 +13,54 @@ string CardGameDrawer::GetTemplate() {
 	return Template;
 }
 
+string CardGameDrawer::GetStackTemplate() {
+	return StackTemplate;
+}
+
+string CardGameDrawer::GetEmptyTemplate() {
+	return EmptyTemplate;
+}
+
 int CardGameDrawer::GetTemplateLineCount() {
 	return TemplateLineCount;
 }
 
-string CardGameDrawer::FormatCard(Suit CardSuit, int CardValue) {
+string CardGameDrawer::GetCardWidthAsWhitespace() {
+	return CardWidthAsWhitespace;
+}
+
+string CardGameDrawer::FormatCard(Suit cardSuit, int cardValue) {
+	return FormatCard(cardSuit, cardValue, false);
+}
+
+string CardGameDrawer::FormatCard(Card& GivenCard, bool isStacked) {
 	// Returns a drawn card formatted to represent the given card suit and value
 
-	int LookupCardValue = CardValue - 1;
+	return FormatCard(GivenCard.GetSuit(), GivenCard.GetValue(), isStacked);
+}
 
-	string SuitSymbol			= SuitNames[CardSuit];
+string CardGameDrawer::FormatCard(Suit cardSuit, int cardValue, bool isStacked) {
+	// Returns a drawn card formatted to represent the given card suit and value
+
+	int LookupCardValue = cardValue - 1;
+
+	string SuitSymbol			= SuitNames[cardSuit];
 	string StringValueTop		= CardNames[LookupCardValue];
 	string StringValueBottom	= "";
+
+	string StackedSymbol;
+	if (isStacked) {
+		StackedSymbol = "|";
+	}
+	else {
+		StackedSymbol = " ";
+	}
 
 	//cout << "Value is " << CardValue << ", StringValue " << StringValueTop << "\n";
 
 	// Minor adjustments to formatting to display 1 and 2 digit numbers correctly (basically just for the number 10)
 	
-	if (CardValue != 10) {
+	if (cardValue != 10) {
 		StringValueTop		+= " ";
 		StringValueBottom	= "_" + CardNames[LookupCardValue];
 	}
@@ -37,19 +68,128 @@ string CardGameDrawer::FormatCard(Suit CardSuit, int CardValue) {
 		StringValueBottom = CardNames[LookupCardValue];
 	}
 
-	return ReplaceString(
+	return 
 		ReplaceString(
 			ReplaceString(
-				GetTemplate(),
-				"Y",
-				SuitSymbol
+				ReplaceString(
+					ReplaceString(
+						GetTemplate(),
+						"A",
+						StackedSymbol
+					),
+					"Y",
+					SuitSymbol
+				),
+				"X",
+				StringValueTop
 			),
-			"X",
-			StringValueTop
-		),
-		"Z",
-		StringValueBottom
+			"Z",
+			StringValueBottom
 	);
+}
+
+/*
+
+string FormatPile(Pile);
+string FormatMultiplePiles(vector<Pile>);
+
+*/
+
+string CardGameDrawer::FormatPile(Pile givenPile) {
+
+	// Get the card from the top of the pile
+	int numCardsTotal = givenPile.GetTotalCards();
+	string formattedTopCard;
+	// Check if the pile is empty and, if it is, use the EmptyTemplate instead
+	if (givenPile.IsEmpty()) {
+		formattedTopCard = GetEmptyTemplate();
+	} else {
+		Card topCard = givenPile.PeekCard();
+		formattedTopCard = FormatCard(topCard, numCardsTotal > 1);
+	}
+	
+	string formattedPile = "";
+
+	// Iterate n times where n is the number of cards - 1 (as we don't want to include the topCard)
+	// Then append StackTemplate each iteration
+
+	string StackedSymbol;
+
+	for (int n = 1; n <= numCardsTotal - 1; n++) {
+
+		if (n == 1) {
+			StackedSymbol = " ";
+		}
+		else {
+			StackedSymbol = "|";
+		}
+
+		string formattedStackTemplate = ReplaceString(
+			GetStackTemplate(),
+			"A",
+			StackedSymbol
+		);
+
+		formattedPile.append(formattedStackTemplate);
+	}
+
+	// Append formatted topCard
+	formattedPile.append(formattedTopCard);
+
+	return formattedPile;
+}
+
+string CardGameDrawer::FormatMultiplePiles(vector<Pile> pilesToFormat) {
+
+	// Essentially identical to the FormatMultipleCards method, but with checks for non-uniform formatted pile height
+
+	vector<vector<string>> storedSplitPiles = {};
+
+	// Go through all piles, split, and store
+
+	// Keep track of the highest number of rows from a formatted pile (default to the height of one card)
+	int highestRowCount = GetTemplateLineCount();
+
+	for (Pile nextPile : pilesToFormat) {
+		string nextPileAsString = FormatPile(nextPile);
+		vector<string> nextPileAsLines = SplitString(nextPileAsString, '\n');
+		// ' instead of " denotes char over string literal
+		storedSplitPiles.push_back(nextPileAsLines);
+
+		int rowCount = nextPileAsLines.size();
+		if (rowCount > highestRowCount) {
+			highestRowCount = rowCount;
+		}
+	};
+
+	// Now, go through each row of each pile and append them next to one another
+
+	vector<string> pileHorizontalRows = {}; // each line to draw will be stored in here
+
+	for (int index = 0; index < highestRowCount; index++) {
+		// Iterate by however many lines there are in the template. 
+		// Was originally just a constant 6 but if the template was to ever change 
+		// for whatever reason, we may as well account for that possibility.
+
+		//cout << index << "\n";
+
+		string row = "";
+
+		for (vector<string> nextPileLines : storedSplitPiles) {
+			if (nextPileLines.size()-1 < index) {
+				row.append(GetCardWidthAsWhitespace());
+			} else {
+				row.append(nextPileLines.at(index));
+			}
+			row.append(CardDisplaySpacing); // CardDisplaySpacing is from resources.h
+		}
+
+		cout << row << "\n";
+
+		pileHorizontalRows.push_back(row);
+	}
+
+	return "";
 }
 
 string CardGameDrawer::FormatCard(Card& GivenCard) {

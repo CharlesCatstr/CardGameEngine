@@ -10,9 +10,9 @@ int Dealer::MakeBlackjackDecision() {
 	// 1: Hit
 	// 2: Stand
 
-	int DealerTotal = GetHandTotal();
+	int dealerTotal = GetHandTotal();
 
-	if (DealerTotal >= 17) { 
+	if (dealerTotal >= 17) { 
 		// The dealer has to stand if their total is 17 or higher
 		return 2;
 	}

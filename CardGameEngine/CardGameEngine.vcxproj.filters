@@ -36,6 +36,12 @@
     <ClCompile Include="BlackjackHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Pile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaronessHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources.h">
@@ -57,6 +63,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BlackjackHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BaronessHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

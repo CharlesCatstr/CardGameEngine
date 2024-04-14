@@ -7,20 +7,20 @@
 using namespace std;
 
 
-BlackjackHandler::BlackjackHandler(CardGameDrawer& InDrawer) {
-    Drawer = InDrawer;
+BlackjackHandler::BlackjackHandler(CardGameDrawer& inDrawer) {
+    drawer = inDrawer;
 }
 
-int BlackjackHandler::GetBlackjackRoundResult(int PlayerTotal, int DealerTotal) {
-    if (PlayerTotal == 21 and DealerTotal == 21) {
+int BlackjackHandler::GetBlackjackRoundResult(int playerTotal, int dealerTotal) {
+    if (playerTotal == 21 and dealerTotal == 21) {
         cout << "Push! (You and the dealer both have Blackjack)\nNo one wins\n";
         return 0;
     }
-    else if (DealerTotal == 21) {
+    else if (dealerTotal == 21) {
         cout << "Dealer has Blackjack!\nYou lose!\n";
         return 1; // 1 means dealer won
     }
-    else if (PlayerTotal == 21) {
+    else if (playerTotal == 21) {
         cout << "You have Blackjack!\nYou win!\n";
         return 2; // 2 means player won
     }
@@ -32,13 +32,13 @@ int BlackjackHandler::BlackjackPlayerChoice() {
 
     cout << BlackjackUserChoiceDescription;
 
-    string PlayerChoiceInput;
-    getline(cin, PlayerChoiceInput);
+    string playerChoiceInput;
+    getline(cin, playerChoiceInput);
 
-    if (PlayerChoiceInput == "1") {
+    if (playerChoiceInput == "1") {
         return 0;
     }
-    else if (PlayerChoiceInput == "2") {
+    else if (playerChoiceInput == "2") {
         return 1;
     }
     else {
@@ -47,7 +47,7 @@ int BlackjackHandler::BlackjackPlayerChoice() {
     }
 }
 
-int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Player& RealPlayer, Dealer& HouseDealer) {
+int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Player& realPlayer, Dealer& houseDealer) {
 
     cout << "\n" << BlackjackAsciiTitle;
 
@@ -56,7 +56,7 @@ int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Pl
     // Start by shuffling the Decks.
     // Don't reset the decks unless there are fewer than 10 cards in total (allows for card counting)
 
-    if (StandardDeck.RemainingCards() + AdditionalDeck.RemainingCards() < 26) {
+    if (standardDeck.RemainingCards() + additionalDeck.RemainingCards() < 26) {
 
         cout << "\n" << GenericDivider << "\n";
 
@@ -64,99 +64,99 @@ int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Pl
 
         cout << "\n" << GenericDivider << "\n\n";
 
-        StandardDeck.Reset();
-        AdditionalDeck.Reset();
+        standardDeck.Reset();
+        additionalDeck.Reset();
     }
 
     cout << "\n";
 
-    StandardDeck.Shuffle();
-    AdditionalDeck.Shuffle();
+    standardDeck.Shuffle();
+    additionalDeck.Shuffle();
 
     // Clear the player's hands
 
-    RealPlayer.EmptyPlayerHand();
-    HouseDealer.EmptyPlayerHand();
+    realPlayer.EmptyPlayerHand();
+    houseDealer.EmptyPlayerHand();
 
     // Give out cards to player and dealer
 
     for (int i = 0; i < 4; i++) {
 
-        Card NextDrawnCard = BlackjackDrawCardHelper(StandardDeck, AdditionalDeck);
+        Card nextDrawnCard = BlackjackDrawCardHelper(standardDeck, additionalDeck);
 
         if (i < 2) {
-            RealPlayer.AddCardToHand(NextDrawnCard);
+            realPlayer.AddCardToHand(nextDrawnCard);
         }
         else {
-            HouseDealer.AddCardToHand(NextDrawnCard);
+            houseDealer.AddCardToHand(nextDrawnCard);
         }
 
     }
 
-    bool PlayerHasStood = false;
-    bool DealerHasStood = false;
+    bool playerHasStood = false;
+    bool dealerHasStood = false;
 
-    bool PlayerHasBlackjack = false;
-    bool DealerHasBlackjack = false;
+    bool playerHasBlackjack = false;
+    bool dealerHasBlackjack = false;
 
-    DisplayAllPlayersHands(RealPlayer, HouseDealer);
+    DisplayAllPlayersHands(realPlayer, houseDealer);
 
     // Give player choices if their total is not 21
 
-    int PlayerTotal = RealPlayer.GetHandTotal();
-    int DealerTotal = HouseDealer.GetHandTotal();
+    int playerTotal = realPlayer.GetHandTotal();
+    int dealerTotal = houseDealer.GetHandTotal();
 
-    cout << "\n: Your total: " << PlayerTotal << "\n";
-    cout << ": Dealer total: " << DealerTotal << "\n\n";
+    cout << "\n: Your total: " << playerTotal << "\n";
+    cout << ": Dealer total: " << dealerTotal << "\n\n";
 
-    int BlackjackRoundResult = GetBlackjackRoundResult(PlayerTotal, DealerTotal);
-    int WinRoundResult = -1;
+    int blackjackRoundResult = GetBlackjackRoundResult(playerTotal, dealerTotal);
+    int winRoundResult = -1;
 
     // Continue the game so long as neither the player nor dealer got blackjack off the bat
 
-    if (BlackjackRoundResult == -1) {
+    if (blackjackRoundResult == -1) {
         // Keep asking the player for their choice until they choose to stand
-        while (not PlayerHasStood) {
-            int NextChoice = BlackjackPlayerChoice();
+        while (not playerHasStood) {
+            int nextChoice = BlackjackPlayerChoice();
 
-            if (NextChoice == 0)
+            if (nextChoice == 0)
             {
                 // Hit
                 cout << "Hit!\n";
 
-                Card NextDrawnCard = BlackjackDrawCardHelper(StandardDeck, AdditionalDeck);
+                Card nextDrawnCard = BlackjackDrawCardHelper(standardDeck, additionalDeck);
 
-                RealPlayer.AddCardToHand(NextDrawnCard);
+                realPlayer.AddCardToHand(nextDrawnCard);
 
-                DisplayAllPlayersHands(RealPlayer, HouseDealer);
+                DisplayAllPlayersHands(realPlayer, houseDealer);
 
                 // Give player choices if their total is not 21
 
-                PlayerTotal = RealPlayer.GetHandTotal();
-                DealerTotal = HouseDealer.GetHandTotal();
+                playerTotal = realPlayer.GetHandTotal();
+                dealerTotal = houseDealer.GetHandTotal();
 
-                PlayerHasBlackjack = PlayerTotal == 21;
-                DealerHasBlackjack = DealerTotal == 21;
+                playerHasBlackjack = playerTotal == 21;
+                dealerHasBlackjack = dealerTotal == 21;
 
-                cout << "\n: Your total: " << PlayerTotal << "\n";
-                cout << ": Dealer total: " << DealerTotal << "\n\n";
+                cout << "\n: Your total: " << playerTotal << "\n";
+                cout << ": Dealer total: " << dealerTotal << "\n\n";
 
-                BlackjackRoundResult = GetBlackjackRoundResult(PlayerTotal, DealerTotal);
-                WinRoundResult = GetWinRoundResult(PlayerTotal, DealerTotal);
+                blackjackRoundResult = GetBlackjackRoundResult(playerTotal, dealerTotal);
+                winRoundResult = GetWinRoundResult(playerTotal, dealerTotal);
 
-                //cout << "\nBJRR: " << BlackjackRoundResult << ", WRR: " << WinRoundResult << "\n";
+                //cout << "\nBJRR: " << blackjackRoundResult << ", WRR: " << winRoundResult << "\n";
 
-                if (not (BlackjackRoundResult == -1 and WinRoundResult == -1)) {
+                if (not (blackjackRoundResult == -1 and winRoundResult == -1)) {
                     // End game, as blackjack was met or someone went bust
                     return 0;
                 }
 
-                //cout << "\nRoundResult: " << BlackjackRoundResult << "\n";
+                //cout << "\nRoundResult: " << blackjackRoundResult << "\n";
 
             }
-            else if (NextChoice == 1) {
+            else if (nextChoice == 1) {
                 // Stand
-                PlayerHasStood = true;
+                playerHasStood = true;
             }
 
         }
@@ -165,41 +165,41 @@ int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Pl
     }
 
     // The Dealer now plays, if the game has not yet ended.
-    int DealerChoice;
+    int dealerChoice;
 
-    while (not DealerHasStood and BlackjackRoundResult == -1 and WinRoundResult == -1) {
+    while (not dealerHasStood and blackjackRoundResult == -1 and winRoundResult == -1) {
         // 1 is hit, 2 is stand
 
         cout << "\nThe Dealer is playing...\n";
 
-        DealerChoice = HouseDealer.MakeBlackjackDecision();
+        dealerChoice = houseDealer.MakeBlackjackDecision();
 
-        if (DealerChoice == 1) {
-            Card NextDrawnCard = BlackjackDrawCardHelper(StandardDeck, AdditionalDeck);
+        if (dealerChoice == 1) {
+            Card nextDrawnCard = BlackjackDrawCardHelper(standardDeck, additionalDeck);
 
-            HouseDealer.AddCardToHand(NextDrawnCard);
+            houseDealer.AddCardToHand(nextDrawnCard);
 
-            PlayerTotal = RealPlayer.GetHandTotal();
-            DealerTotal = HouseDealer.GetHandTotal();
+            playerTotal = realPlayer.GetHandTotal();
+            dealerTotal = houseDealer.GetHandTotal();
 
-            DisplayAllPlayersHands(RealPlayer, HouseDealer);
+            DisplayAllPlayersHands(realPlayer, houseDealer);
         }
         else {
 
             cout << "\nThe Dealer is standing.\n";
 
-            DealerHasStood = true;
+            dealerHasStood = true;
         }
 
-        cout << "\n: Your total: " << PlayerTotal << "\n";
-        cout << ": Dealer total: " << DealerTotal << "\n\n";
+        cout << "\n: Your total: " << playerTotal << "\n";
+        cout << ": Dealer total: " << dealerTotal << "\n\n";
 
-        BlackjackRoundResult    = GetBlackjackRoundResult(PlayerTotal, DealerTotal);
-        WinRoundResult          = GetWinRoundResult(PlayerTotal, DealerTotal);
+        blackjackRoundResult    = GetBlackjackRoundResult(playerTotal, dealerTotal);
+        winRoundResult          = GetWinRoundResult(playerTotal, dealerTotal);
 
-        //cout << "\nBJRR: " << BlackjackRoundResult << ", WRR: " << WinRoundResult << "\n";
+        //cout << "\nBJRR: " << blackjackRoundResult << ", WRR: " << winRoundResult << "\n";
 
-        if (not (BlackjackRoundResult == -1 and WinRoundResult == -1)) {
+        if (not (blackjackRoundResult == -1 and winRoundResult == -1)) {
             // End game, as blackjack was met or someone went bust
 
             return 0;
@@ -207,12 +207,12 @@ int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Pl
         else {
             // Also output who won if there wasn't a bust or a blackjack (whoever scored higher)
 
-            if (BlackjackRoundResult == -1 and WinRoundResult == -1) {
+            if (blackjackRoundResult == -1 and winRoundResult == -1) {
                 
-                if (PlayerTotal > DealerTotal) {
+                if (playerTotal > dealerTotal) {
                     cout << "\nPlayer has a higher total, Player wins!\n\n";
                 }
-                else if (PlayerTotal < DealerTotal) {
+                else if (playerTotal < dealerTotal) {
                     cout << "\Dealer has a higher total, Dealer wins!\n\n";
                 }
                 else {
@@ -229,11 +229,11 @@ int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Pl
     /*
     // Dealer makes decision
 
-    int DealerDecision = HouseDealer.MakeDecision();
+    int DealerDecision = houseDealer.MakeDecision();
 
     if (DealerDecision == 1) {
-        Card NextDrawnCard = BlackjackDrawCardHelper();
-        HouseDealer.AddCardToHand(NextDrawnCard);
+        Card nextDrawnCard = BlackjackDrawCardHelper();
+        houseDealer.AddCardToHand(nextDrawnCard);
         cout << "Dealer has hit and drawn another card";
     }
 
@@ -242,13 +242,13 @@ int BlackjackHandler::PlayBlackjack(Deck& StandardDeck, Deck& AdditionalDeck, Pl
     return 0;
 }
 
-int BlackjackHandler::GetWinRoundResult(int PlayerTotal, int DealerTotal) {
+int BlackjackHandler::GetWinRoundResult(int playerTotal, int dealerTotal) {
 
-    if (PlayerTotal > 21) {
+    if (playerTotal > 21) {
         cout << "\nBust!\nThe house wins, as always!\n\n";
         return 0; // Player lost
     }
-    else if (DealerTotal > 21) {
+    else if (dealerTotal > 21) {
         cout << "\nDealer Bust!\nYou win!\n\n";
         return 1; // Player won
     }
@@ -258,33 +258,33 @@ int BlackjackHandler::GetWinRoundResult(int PlayerTotal, int DealerTotal) {
     }
 }
 
-Card BlackjackHandler::BlackjackDrawCardHelper(Deck& StandardDeck, Deck& AdditionalDeck) {
+Card BlackjackHandler::BlackjackDrawCardHelper(Deck& standardDeck, Deck& additionalDeck) {
     // Helper function to draw from both decks evenly, 
     // by swapping which deck is in use each time
 
-    Card DrawnCard;
+    Card drawnCard;
 
-    if (LastDrawFromAdditional) {
-        DrawnCard = StandardDeck.DrawCard();
+    if (lastDrawFromAdditional) {
+        drawnCard = standardDeck.DrawCard();
     }
     else {
-        DrawnCard = AdditionalDeck.DrawCard();
+        drawnCard = additionalDeck.DrawCard();
     }
 
-    LastDrawFromAdditional = not LastDrawFromAdditional;
+    lastDrawFromAdditional = not lastDrawFromAdditional;
     // Flip this each time so that we draw from both decks and not just one
 
-    return DrawnCard;
+    return drawnCard;
 }
 
-void BlackjackHandler::DisplayAllPlayersHands(Player RealPlayer, Dealer HouseDealer) {
+void BlackjackHandler::DisplayAllPlayersHands(Player realPlayer, Dealer houseDealer) {
     // Helper function to display the dealer and player's hands
 
     // Display dealer cards
 
     cout << DealerDivider << "\n";
 
-    cout << Drawer.FormatMultipleCards(HouseDealer.GetPlayerHand()) << "\n";
+    cout << drawer.FormatMultipleCards(houseDealer.GetPlayerHand()) << "\n";
 
     cout << GenericDivider << "\n";
 
@@ -292,7 +292,7 @@ void BlackjackHandler::DisplayAllPlayersHands(Player RealPlayer, Dealer HouseDea
 
     cout << PlayerDivider << "\n";
 
-    cout << Drawer.FormatMultipleCards(RealPlayer.GetPlayerHand()) << "\n";
+    cout << drawer.FormatMultipleCards(realPlayer.GetPlayerHand()) << "\n";
 
     cout << GenericDivider << "\n";
 }

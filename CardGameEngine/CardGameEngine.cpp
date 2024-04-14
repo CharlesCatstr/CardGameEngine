@@ -11,19 +11,23 @@
 #include "Player.h"
 #include "Dealer.h"
 #include "BlackjackHandler.h"
+#include "BaronessHandler.h"
+
+#include <stdlib.h> // for using system("CLS")
 
 using namespace std;
 
 // Func declarations
 
-Deck StandardDeck       = Deck();   // Standard deck for use in all games
-Deck AdditionalDeck     = Deck();   // Additional deck for Blackjack
+Deck standardDeck       = Deck();   // Standard deck for use in all games
+Deck additionalDeck     = Deck();   // Additional deck for Blackjack
 
 CardGameDrawer Drawer   = CardGameDrawer(); // Create drawer class for rendering
-Dealer HouseDealer      = Dealer();         // Create Dealer instance of Player class to play against
-Player RealPlayer       = Player();
+Dealer houseDealer      = Dealer();         // Create Dealer instance of Player class to play against
+Player realPlayer       = Player();
 
 BlackjackHandler Blackjack = BlackjackHandler(Drawer);
+BaronessHandler Baroness = BaronessHandler(Drawer, standardDeck);
 
 //bool LastCardDrawnFromAdditional = false;
 
@@ -175,11 +179,24 @@ int main()
         }
 
         if (PlayerInput == "1") {
-           Blackjack.PlayBlackjack(StandardDeck, AdditionalDeck, RealPlayer, HouseDealer);
+
+            // use system("CLS") to clear the console before the next game starts
+            // I used https://mathbits.com/MathBits/CompSci/Introduction/clear.htm#:~:text=To%20clear%20the%20screen%20in,h>%20is%20needed. to figure out how to do this
+
+            system("CLS");
+            cout << flush; // Flushes the output stream
+
+            Blackjack.PlayBlackjack(standardDeck, additionalDeck, realPlayer, houseDealer);
+
         }
         else if (PlayerInput == "2") {
-            cout << "Solitaire: PASS\n";
-            //PlaySolitaire();
+
+            // See above in PlayerInput == "1"
+
+            system("CLS");
+            cout << flush; // Flushes the output stream
+
+            Baroness.PlayBaroness(realPlayer);
         }
         else if (PlayerInput == "3") {
             IsPlaying = false;
