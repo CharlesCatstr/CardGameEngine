@@ -101,7 +101,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 
 		Card firstTopCard = firstSelectedPile.PeekCard();
 
-		cout << "\n-> First card's value: " << firstTopCard.GetValue() << "\n\n";
+		cout << "\n-> First card's value: " << firstTopCard.GetValue() << "\n";
 
 		if (firstTopCard.GetValue() == 13) {
 			// Remove the card immediately as it is a king and equals 13
@@ -141,7 +141,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 
 				Card secondTopCard = secondSelectedPile.PeekCard();
 
-				cout << "\n-> Second card's value: " << secondTopCard.GetValue() << "\n\n";
+				cout << "\n-> Second card's value: " << secondTopCard.GetValue() << "\n";
 
 				if (firstTopCard.GetValue() + secondTopCard.GetValue() == 13) {
 					// both are valid and both add to 13 so we can remove both cards
