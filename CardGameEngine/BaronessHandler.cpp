@@ -94,7 +94,12 @@ void BaronessHandler::UserSelectThirteenCards() {
 
 		Pile& firstSelectedPile = allPiles[firstColumnOrCancel - 1];
 
-		// Get the card on top of the pile
+		// Get the card on top of the pile (so long as it is not empty)
+
+		if (firstSelectedPile.IsEmpty()) {
+			cout << "That column is empty!\n";
+			return;
+		}
 
 		Card firstTopCard = firstSelectedPile.PeekCard();
 
@@ -130,7 +135,12 @@ void BaronessHandler::UserSelectThirteenCards() {
 
 				Pile& secondSelectedPile = allPiles[secondColumnOrCancel - 1];
 
-				// Get the card on top of the pile
+				// Get the card on top of the pile (if not empty)
+
+				if (secondSelectedPile.IsEmpty()) {
+					cout << "That column is empty!\n";
+					return;
+				}
 
 				Card secondTopCard = secondSelectedPile.PeekCard();
 
