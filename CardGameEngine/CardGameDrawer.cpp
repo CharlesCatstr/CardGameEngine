@@ -193,12 +193,15 @@ string CardGameDrawer::FormatBaroness(vector<Pile> pilesToFormat, int deckRemain
 
 	// First, format the deck counter and separator
 
-	string deckCountAsString = to_string(deckRemainingCards); 
+	string deckCountAsString = " ";
 
-	// Add whitespace if single digit so that the formatting is consistent
+	// Add whitespace beforehand if single digit, so that the formatting is consistent and centered
 
 	if (deckRemainingCards < 10) {
-		deckCountAsString.append(" ");
+		deckCountAsString.append(to_string(deckRemainingCards));
+	}
+	else {
+		deckCountAsString = to_string(deckRemainingCards);
 	}
 
 	string formattedDeckCounter = ReplaceString(

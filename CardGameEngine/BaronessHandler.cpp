@@ -85,9 +85,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 		return;
 	}
 	else {
-		//todo remove
-		cout << "You selected: " << firstColumnOrCancel;
-
+		
 		// Check if this first column's card is a king (equals 13) on its own. If not, ask for the second column
 
 		// Get the pile
@@ -97,18 +95,17 @@ void BaronessHandler::UserSelectThirteenCards() {
 		// Get the card on top of the pile (so long as it is not empty)
 
 		if (firstSelectedPile.IsEmpty()) {
-			cout << "That column is empty!\n";
+			cout << "That column is empty!\n\n";
 			return;
 		}
 
 		Card firstTopCard = firstSelectedPile.PeekCard();
 
-		cout << "1st card value: " << firstTopCard.GetValue() << "\n";
+		cout << "\n-> First card's value: " << firstTopCard.GetValue() << "\n";
 
 		if (firstTopCard.GetValue() == 13) {
 			// Remove the card immediately as it is a king and equals 13
 
-			cout << "get out of here nerd!\n";
 
 			firstSelectedPile.PopCard();
 
@@ -123,7 +120,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 			do {
 				secondColumnOrCancel = GetUserAction(validUserInputChoices);
 				if (secondColumnOrCancel == firstColumnOrCancel) {
-					cout << "You cannot choose the same column twice!\n";
+					cout << "\nYou cannot choose the same column twice!\n\n";
 				}
 			} while (secondColumnOrCancel == firstColumnOrCancel);
 
@@ -138,13 +135,13 @@ void BaronessHandler::UserSelectThirteenCards() {
 				// Get the card on top of the pile (if not empty)
 
 				if (secondSelectedPile.IsEmpty()) {
-					cout << "That column is empty!\n";
+					cout << "That column is empty!\n\n";
 					return;
 				}
 
 				Card secondTopCard = secondSelectedPile.PeekCard();
 
-				cout << "2nd card value: " << secondTopCard.GetValue() << "\n";
+				cout << "\n-> Second card's value: " << secondTopCard.GetValue() << "\n";
 
 				if (firstTopCard.GetValue() + secondTopCard.GetValue() == 13) {
 					// both are valid and both add to 13 so we can remove both cards
@@ -156,7 +153,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 				}
 				else {
 
-					cout << "Invalid selection, cards do not add to 13!\n";
+					cout << "\nInvalid selection, cards do not add to 13!\n\n";
 
 				}
 			}
@@ -237,8 +234,15 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 		int playerChoice = GetUserAction(validUserActions);
 
 		if (playerChoice == 0) {
-			// Add a new card to each pile
-			AppendAllPiles();
+			// Add a new card to each pile, or show error if there are no cards left
+
+			if (activeDeck.RemainingCards() > 0) {
+				AppendAllPiles();
+			}
+			else {
+				cout << "There are no cards left in the deck to draw.\n";
+			}
+
 		} else if (playerChoice == 1) {
 			// Call the pile selector to let the player choose the pile(s) they want to discard (if the card(s) on the bottom add to 13)
 			UserSelectThirteenCards();

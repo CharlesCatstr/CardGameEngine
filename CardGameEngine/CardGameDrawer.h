@@ -46,9 +46,9 @@ class CardGameDrawer
 |     |  #
 |_____|  #
          #
- CARDS   #
- LEFT    #
- ------  #
+ ACE:    #
+ 1       #
+         #
  JACK:   #
  11      #
          #
