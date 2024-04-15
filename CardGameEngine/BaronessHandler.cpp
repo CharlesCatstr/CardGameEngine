@@ -79,18 +79,82 @@ void BaronessHandler::UserSelectThirteenCards() {
 
 	cout << "Please select the column(s) that equal 13 that you want to discard\nEnter 0 to cancel\n";
 
-	int firstColumnSelectedOrCancel = GetUserAction(validUserInputChoices);
+	int firstColumnOrCancel = GetUserAction(validUserInputChoices);
 
-	if (firstColumnSelectedOrCancel == 0) {
+	if (firstColumnOrCancel == 0) {
 		return;
 	}
 	else {
 		//todo remove
-		cout << "You selected: " << firstColumnSelectedOrCancel;
-
-
+		cout << "You selected: " << firstColumnOrCancel;
 
 		// Check if this first column's card is a king (equals 13) on its own. If not, ask for the second column
+
+		// Get the pile
+
+		Pile& firstSelectedPile = allPiles[firstColumnOrCancel - 1];
+
+		// Get the card on top of the pile
+
+		Card firstTopCard = firstSelectedPile.PeekCard();
+
+		cout << "1st card value: " << firstTopCard.GetValue() << "\n";
+
+		if (firstTopCard.GetValue() == 13) {
+			// Remove the card immediately as it is a king and equals 13
+
+			cout << "get out of here nerd!\n";
+
+			firstSelectedPile.PopCard();
+
+			return;
+		}
+		else {
+
+			// get second value, make sure its not the same column as the first (even though it is impossible to get 13 this way)
+
+			int secondColumnOrCancel = firstColumnOrCancel;
+
+			do {
+				secondColumnOrCancel = GetUserAction(validUserInputChoices);
+				if (secondColumnOrCancel == firstColumnOrCancel) {
+					cout << "You cannot choose the same column twice!\n";
+				}
+			} while (secondColumnOrCancel == firstColumnOrCancel);
+
+
+			if (secondColumnOrCancel == 0) {
+				return;
+			}
+			else {
+
+				Pile& secondSelectedPile = allPiles[secondColumnOrCancel - 1];
+
+				// Get the card on top of the pile
+
+				Card secondTopCard = secondSelectedPile.PeekCard();
+
+				cout << "2nd card value: " << secondTopCard.GetValue() << "\n";
+
+				if (firstTopCard.GetValue() + secondTopCard.GetValue() == 13) {
+					// both are valid and both add to 13 so we can remove both cards
+
+					firstSelectedPile.PopCard();
+					secondSelectedPile.PopCard();
+
+					return;
+				}
+				else {
+
+					cout << "Invalid selection, cards do not add to 13!\n";
+
+				}
+			}
+		}
+
+
+
+		
 	}
 
 }
