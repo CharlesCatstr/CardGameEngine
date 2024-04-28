@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 BlackjackHandler::BlackjackHandler(CardGameDrawer& inDrawer) {
     drawer = inDrawer;
 }
@@ -122,6 +121,11 @@ int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Pl
             if (nextChoice == 0)
             {
                 // Hit
+
+                // clear the output so its easier to read
+                system("CLS");
+                cout << flush; // Flushes the output stream
+
                 cout << "Hit!\n";
 
                 Card nextDrawnCard = BlackjackDrawCardHelper(standardDeck, additionalDeck);
@@ -158,10 +162,8 @@ int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Pl
                 // Stand
                 playerHasStood = true;
             }
-
+            
         }
-
-
     }
 
     // The Dealer now plays, if the game has not yet ended.
@@ -170,11 +172,18 @@ int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Pl
     while (not dealerHasStood and blackjackRoundResult == -1 and winRoundResult == -1) {
         // 1 is hit, 2 is stand
 
+        // clear the output so its easier to read
+        system("CLS");
+        cout << flush; // Flushes the output stream
+
         cout << "\nThe Dealer is playing...\n";
 
         dealerChoice = houseDealer.MakeBlackjackDecision();
 
         if (dealerChoice == 1) {
+
+            // dealer chooses to draw card, add it to their hand and then display the new hands
+
             Card nextDrawnCard = BlackjackDrawCardHelper(standardDeck, additionalDeck);
 
             houseDealer.AddCardToHand(nextDrawnCard);
@@ -186,6 +195,8 @@ int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Pl
         }
         else {
 
+            // dealer chose to stand
+
             cout << "\nThe Dealer is standing.\n";
 
             dealerHasStood = true;
@@ -193,6 +204,8 @@ int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Pl
 
         cout << "\n: Your total: " << playerTotal << "\n";
         cout << ": Dealer total: " << dealerTotal << "\n\n";
+
+        // get round results
 
         blackjackRoundResult    = GetBlackjackRoundResult(playerTotal, dealerTotal);
         winRoundResult          = GetWinRoundResult(playerTotal, dealerTotal);
@@ -205,9 +218,9 @@ int BlackjackHandler::PlayBlackjack(Deck& standardDeck, Deck& additionalDeck, Pl
             return 0;
         }
         else {
-            // Also output who won if there wasn't a bust or a blackjack (whoever scored higher)
+            // Also output who won if there wasn't a bust or a blackjack (whoever scored higher) (as long as the dealer has stood, otherwise the dealer plays once and then gets cut off)
 
-            if (blackjackRoundResult == -1 and winRoundResult == -1) {
+            if (dealerHasStood and blackjackRoundResult == -1 and winRoundResult == -1) {
                 
                 if (playerTotal > dealerTotal) {
                     cout << "\nPlayer has a higher total, Player wins!\n\n";

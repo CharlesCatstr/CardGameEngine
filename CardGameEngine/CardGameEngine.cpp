@@ -156,7 +156,7 @@ int main()
     bool IsPlaying = true;
 
     do {
-
+        //cout << "david is the coolest (he won the baroness game fr fr).\n"; // thanks david 
         cout << "What game do you want to play?\n";
 
         cout << GenericDivider;
@@ -168,7 +168,9 @@ int main()
         string PlayerInput;
         bool PlayerInputValid = false;
 
-        while (not PlayerInputValid) {
+        // keep asking until we get valid user input
+
+        do {
             cout << "\n> ";
             getline(cin, PlayerInput);
             PlayerInputValid = (PlayerInput == "1" or PlayerInput == "2" or PlayerInput == "3");
@@ -176,7 +178,7 @@ int main()
             if (not PlayerInputValid) {
                 cout << "\nIncorrect selection! Please enter a value from the options provided.\n";
             }
-        }
+        } while (not PlayerInputValid);
 
         if (PlayerInput == "1") {
 

@@ -57,8 +57,9 @@ void BaronessHandler::AppendAllPiles() {
 
 void BaronessHandler::DisplayActions() {
 
-	cout << "\n";
+	// Display the user's actions to them
 
+	cout << "\n";
 	cout << "Your options:\n";
 
 	cout << "> 0: Draw 5 more cards\n";
@@ -67,25 +68,79 @@ void BaronessHandler::DisplayActions() {
 
 }
 
+bool BaronessHandler::DoThirteensExist() {
+	// Returns true if there are any 13s in any columns (kings or cards totaling to 13)
+
+	bool foundThirteen = false;
+
+	for (int i = 1; i < numPiles; i++) {
+		// Skip if the pile is empty
+		if (allPiles[i].IsEmpty()) { continue; };
+
+		Card topCard = allPiles[i].PeekCard();
+
+		if (topCard.GetValue() == 13) {
+			foundThirteen = true;
+			break;
+		}
+
+		// try next pile, if there is a next pile and it isn't empty
+
+		for (int i = 1; i < numPiles; i++) {
+			
+
+
+			/*
+			// Skip if the pile is empty
+			if (allPiles[i].IsEmpty()) { continue; };
+
+			Card topCard = allPiles[i].PeekCard();
+
+			if (topCard.GetValue() == 13) {
+				foundThirteen = true;
+				break;
+			}
+
+			// try next pile, if there is a next pile and it isn't empty
+
+			if (i + 1 < numPiles and not allPiles[i + 1].IsEmpty()) {
+				Card nextTopCard = allPiles[i + 1].PeekCard();
+
+				if (topCard.GetValue() + nextTopCard.GetValue() == 13) {
+					foundThirteen = true;
+					break;
+				}
+			}
+			*/
+
+		}
+
+	}
+
+	return foundThirteen;
+}
+
 void BaronessHandler::UserSelectThirteenCards() {
 	vector<string> validUserInputChoices = { "0" };
 
 	// setup the valid options based on the number of piles in the game, with 0 as a predefined value for cancelling
+	// allows for us to add more piles if we wanted (though the game only needs 5)
 	int count = 1;
 	for (Pile nextPile : allPiles) {
 		validUserInputChoices.push_back(to_string(count));
 		count++;
 	}
-
+	// ask user for their choice
 	cout << "Please select the column(s) that equal 13 that you want to discard\nEnter 0 to cancel\n";
 
 	int firstColumnOrCancel = GetUserAction(validUserInputChoices);
 
 	if (firstColumnOrCancel == 0) {
+		// cancelled, do nothing
 		return;
 	}
 	else {
-		
+
 		// Check if this first column's card is a king (equals 13) on its own. If not, ask for the second column
 
 		// Get the pile
@@ -99,6 +154,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 			return;
 		}
 
+		// take a look at what the first selected pile's top card is
 		Card firstTopCard = firstSelectedPile.PeekCard();
 
 		cout << "\n-> First card's value: " << firstTopCard.GetValue() << "\n\n";
@@ -138,7 +194,7 @@ void BaronessHandler::UserSelectThirteenCards() {
 					cout << "That column is empty!\n\n";
 					return;
 				}
-
+				// take a look at the top card of the second selectedpile
 				Card secondTopCard = secondSelectedPile.PeekCard();
 
 				cout << "\n-> Second card's value: " << secondTopCard.GetValue() << "\n\n";
@@ -158,13 +214,10 @@ void BaronessHandler::UserSelectThirteenCards() {
 				}
 			}
 		}
-
-
-
-		
 	}
-
 }
+	// TODO: win condition
+	// TODO 1 in 3 chnce david williams easter egg (he won before you did)
 
 int BaronessHandler::GetUserAction(vector<string> validOptions) {
 
@@ -223,6 +276,8 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 
 		// Draw the board in its current empty state
 
+		cout << "\n";
+
 		cout << drawer.FormatBaroness(allPiles, activeDeck.RemainingCards()) << "\n";
 
 		// Show the player's choices
@@ -231,14 +286,23 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 
 		// Get the user's choice of action
 
+		if (DoThirteensExist()) {
+			cout << "There is a possible play this round\n";
+		};
+
 		int playerChoice = GetUserAction(validUserActions);
 
 		if (playerChoice == 0) {
 			// Add a new card to each pile, or show error if there are no cards left
 
+			// clear the output so its easier to read
+			system("CLS");
+			cout << flush; // Flushes the output stream
+
 			if (activeDeck.RemainingCards() > 0) {
 				AppendAllPiles();
 			}
+
 			else {
 				cout << "There are no cards left in the deck to draw.\n";
 			}
@@ -246,6 +310,11 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 		} else if (playerChoice == 1) {
 			// Call the pile selector to let the player choose the pile(s) they want to discard (if the card(s) on the bottom add to 13)
 			UserSelectThirteenCards();
+
+			// clear the output so its easier to read
+			system("CLS");
+			cout << flush; // Flushes the output stream
+
 		} else if (playerChoice == 2) {
 			SetGameActive(false);
 		}

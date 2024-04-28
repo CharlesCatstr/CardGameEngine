@@ -19,11 +19,15 @@ void Card::SetSuit(Suit N_Suit) {
 	CardSuit = N_Suit;
 };
 
-int Card::GetValue() {
+int Card::GetValue() const {
 	return CardValue;
 };
 
-Suit Card::GetSuit() {
+Suit Card::GetSuit() const {
 	return CardSuit;
 };
+
+bool Card::operator==(const Card& otherCard) {
+	return GetValue() == otherCard.GetValue() && GetSuit() == otherCard.GetSuit();
+}
 

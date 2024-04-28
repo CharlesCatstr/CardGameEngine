@@ -17,7 +17,9 @@ public:
 
 	void SetValue(int N_Value);
 	void SetSuit(Suit N_Suit);
-	int GetValue();
-	Suit GetSuit();
+	int GetValue() const;
+	Suit GetSuit() const;
+
+	bool operator==(const Card& otherCard);
 };
 

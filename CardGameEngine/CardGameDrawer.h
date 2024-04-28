@@ -13,7 +13,7 @@ class CardGameDrawer
 {
 
 	string Template = 
-	R"(A_____A
+	R"(AB___A
 |X   |
 |     |
 |  Y  |
@@ -22,7 +22,7 @@ class CardGameDrawer
 )";	
 
 	string StackTemplate =
-		R"(A_____A
+		R"(AB___A
 )";
 
 	string EmptyTemplate =

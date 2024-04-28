@@ -76,12 +76,22 @@ string CardGameDrawer::FormatCard(Suit cardSuit, int cardValue, bool isStacked) 
 		StringValueBottom = CardNames[LookupCardValue];
 	}
 
+	string stackedTopFormatString = "__";
+
+	if (isStacked) {
+		stackedTopFormatString = "B";
+	}
+
 	return 
 		ReplaceString(
 			ReplaceString(
 				ReplaceString(
 					ReplaceString(
-						GetTemplate(),
+						ReplaceString(
+							GetTemplate(),
+							"B",
+							stackedTopFormatString
+						),
 						"A",
 						StackedSymbol
 					),
@@ -108,11 +118,12 @@ string CardGameDrawer::FormatPile(Pile givenPile) {
 	// Get the card from the top of the pile
 	int numCardsTotal = givenPile.GetTotalCards();
 	string formattedTopCard;
+	Card topCard;
 	// Check if the pile is empty and, if it is, use the EmptyTemplate instead
 	if (givenPile.IsEmpty()) {
 		formattedTopCard = GetEmptyTemplate();
 	} else {
-		Card topCard = givenPile.PeekCard();
+		topCard = givenPile.PeekCard();
 		formattedTopCard = FormatCard(topCard, numCardsTotal > 1);
 	}
 	
@@ -121,25 +132,69 @@ string CardGameDrawer::FormatPile(Pile givenPile) {
 	// Iterate n times where n is the number of cards - 1 (as we don't want to include the topCard)
 	// Then append StackTemplate each iteration
 
-	string StackedSymbol;
+	string stackedSymbol;
 
-	for (int n = 1; n <= numCardsTotal - 1; n++) {
+	vector<Card> cardsInPile = givenPile.GetAllCards();
 
-		if (n == 1) {
-			StackedSymbol = " ";
+	int count = 1;
+	int lastCardValue = -1;
+	string stringCardValue;
+
+	for (Card nextCard: cardsInPile) {
+		// Skip the top card as its already formatted
+		if (nextCard == topCard) {
+			continue;
+		}
+
+		if (count == 1) {
+			stackedSymbol = " ";
+		} else {
+			stackedSymbol = "|";
+		}
+
+		count++;
+
+		if (lastCardValue == -1) {
+			stringCardValue = "__";
+		} else if (lastCardValue != 10) {
+			stringCardValue = CardNames[lastCardValue - 1] + "_";
 		}
 		else {
-			StackedSymbol = "|";
+			stringCardValue = CardNames[lastCardValue - 1];
 		}
 
 		string formattedStackTemplate = ReplaceString(
-			GetStackTemplate(),
-			"A",
-			StackedSymbol
+			ReplaceString(
+				GetStackTemplate(),
+				"A",
+				stackedSymbol
+			),
+			"B",
+			stringCardValue
 		);
+
+		lastCardValue = nextCard.GetValue();
 
 		formattedPile.append(formattedStackTemplate);
 	}
+
+	// lastCardValue will now equal the second topmost card (that isnt the one shown) so format that now
+
+	if (lastCardValue == -1) {
+		stringCardValue = "__";
+	}
+	else if (lastCardValue != 10) {
+		stringCardValue = CardNames[lastCardValue - 1] + "_";
+	}
+	else {
+		stringCardValue = CardNames[lastCardValue - 1];
+	}
+
+	formattedTopCard = ReplaceString(
+		formattedTopCard,
+		"B",
+		stringCardValue
+	);
 
 	// Append formatted topCard
 	formattedPile.append(formattedTopCard);

@@ -23,6 +23,7 @@ public:
 	int PlayBaroness(Player& realPlayer);
 	bool IsGameActive();
 	void SetGameActive(bool isActive);
+	bool DoThirteensExist();
 	void AppendAllPiles();
 
 	void UserSelectThirteenCards();
