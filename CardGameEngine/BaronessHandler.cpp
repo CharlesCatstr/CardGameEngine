@@ -275,8 +275,30 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 
 		cout << "Does 13 exist? " << DoThirteensExist() << "\n\n";
 
-		if (DoThirteensExist()) {
+		bool allPilesEmpty = true;
+
+		for (int x = 0; x < numPiles; x++) {
+			if (not allPiles[x].IsEmpty()) {
+				allPilesEmpty = false;
+				break;
+			}
+		}
+
+		if (allPilesEmpty and activeDeck.RemainingCards() <= 0) {
+			// Player has won, let them know
+			cout << "\nNo cards remain. You win!\n\n";
+			cout << "david is the coolest (he won the baroness game before you).\n"; // thanks david williams for playing my game and forcing me to add this cout
+			SetGameActive(false);
+			// End this iteration early so the loop can end without showing user options
+			continue;
+		} else if (DoThirteensExist()) {
 			cout << "\nThere is a possible play this round\n\n";
+		} else if (activeDeck.RemainingCards() <= 0) {
+			// The game is impossible and the player loses as there are no plays available and no cards left in the deck
+			cout << "\nThere are no more possible plays left. You lose.\n\n";
+			SetGameActive(false);
+			// End this iteration early so the loop can end without showing user options
+			continue;
 		};
 
 		int playerChoice = GetUserAction(validUserActions);
