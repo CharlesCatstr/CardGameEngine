@@ -73,7 +73,7 @@ bool BaronessHandler::DoThirteensExist() {
 
 	bool foundThirteen = false;
 
-	for (int i = 1; i < numPiles; i++) {
+	for (int i = 0; i < numPiles; i++) {
 		// Skip if the pile is empty
 		if (allPiles[i].IsEmpty()) { continue; };
 
@@ -86,32 +86,19 @@ bool BaronessHandler::DoThirteensExist() {
 
 		// try next pile, if there is a next pile and it isn't empty
 
-		for (int i = 1; i < numPiles; i++) {
-			
-
-
-			/*
+		for (int j = 0; j < numPiles; j++) {
 			// Skip if the pile is empty
-			if (allPiles[i].IsEmpty()) { continue; };
+			if (allPiles[j].IsEmpty()) { continue; };
 
-			Card topCard = allPiles[i].PeekCard();
+			Card nextCard = allPiles[j].PeekCard();
 
-			if (topCard.GetValue() == 13) {
+			//cout << "the total of the piles " << i << " and " << j << " is " << topCard.GetValue() + nextCard.GetValue() << "\n";
+
+			if (topCard.GetValue() + nextCard.GetValue() == 13) {
+				// There is a thirteen available from the total of 2 cards, return true
 				foundThirteen = true;
 				break;
 			}
-
-			// try next pile, if there is a next pile and it isn't empty
-
-			if (i + 1 < numPiles and not allPiles[i + 1].IsEmpty()) {
-				Card nextTopCard = allPiles[i + 1].PeekCard();
-
-				if (topCard.GetValue() + nextTopCard.GetValue() == 13) {
-					foundThirteen = true;
-					break;
-				}
-			}
-			*/
 
 		}
 
@@ -286,8 +273,10 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 
 		// Get the user's choice of action
 
+		cout << "Does 13 exist? " << DoThirteensExist() << "\n\n";
+
 		if (DoThirteensExist()) {
-			cout << "There is a possible play this round\n";
+			cout << "\nThere is a possible play this round\n\n";
 		};
 
 		int playerChoice = GetUserAction(validUserActions);
