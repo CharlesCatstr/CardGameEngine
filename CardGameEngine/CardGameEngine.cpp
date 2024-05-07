@@ -151,12 +151,15 @@ int main()
     cout << "\n\n\n\n\n\n\n\n\n\n";
     */
 
+
+    // Set baroness to use the debug deck order
+    Baroness.SetDebugMode(true);
+
     cout << "Welcome!!!!!!!!!\n\n";
 
     bool IsPlaying = true;
 
     do {
-        //cout << "david is the coolest (he won the baroness game fr fr).\n"; // thanks david 
         cout << "What game do you want to play?\n";
 
         cout << GenericDivider;

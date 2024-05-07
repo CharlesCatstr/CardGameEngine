@@ -12,6 +12,7 @@ class BaronessHandler
 	CardGameDrawer drawer;
 
 	bool gameIsActive;
+	bool debugMode;
 
 	Deck activeDeck;
 
@@ -23,6 +24,7 @@ public:
 	int PlayBaroness(Player& realPlayer);
 	bool IsGameActive();
 	void SetGameActive(bool isActive);
+	void SetDebugMode(bool isDebug);
 	bool DoThirteensExist();
 	void AppendAllPiles();
 

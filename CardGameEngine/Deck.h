@@ -22,10 +22,13 @@ public:
 
 	Card DrawCard();
 	vector<Card> GetAllCards();
+	Card GetFirstCardOfValue(int inValue, vector<Card> cardsToConsider);
 
 	void Shuffle();
 	void Refill();
 	void Reset();
+
+	void SetDebugOrder();
 
 	int RemainingCards();
 

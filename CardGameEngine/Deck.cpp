@@ -43,6 +43,67 @@ Deck::Deck() {
 	Shuffle();
 }
 
+Card Deck::GetFirstCardOfValue(int inValue, vector<Card> cardsToConsider) {
+	// Returns the first card in the provided cardsToConsider vector with the given value inValue
+	// We don't use the cards in play because these are unaffected by this method and we don't want to choose the same card twice
+
+	for (Card nextCard : cardsToConsider) {
+		if (nextCard.GetValue() == inValue) {
+			return nextCard;
+		}
+	}
+
+}
+
+void Deck::SetDebugOrder() {
+	// Orders all cards into an order that guarantees a possible win for debugging purposes (to ensure that the win conditions can be met and are handled appropriately)
+
+	// To ensure a win, cards must be ordered so that cards next to one another add to 13 e.g. the order of 12, 1, 11, 2, 10
+
+	int cardsChecked = 0;
+	int currentRiggedIndex = 0;
+
+	vector<Card> cardPool = CardsInPlay;
+	vector<Card> newOrder;
+
+	do {
+
+		cardsChecked++;
+
+		// Get the next card and set in the new order
+
+		Card nextCard = GetFirstCardOfValue(riggedCardOrder.at(currentRiggedIndex), cardPool);
+
+		// Add to newOrder
+
+		newOrder.push_back(nextCard);
+
+		// Remove this card from the card pool using the erase-remove idiom (https://en.wikipedia.org/wiki/Erase–remove_idiom)
+		// Solution found on StackOverflow at https://stackoverflow.com/questions/3385229/c-erase-vector-element-by-value-rather-than-by-position
+
+		// This essentially moves all elements in the given vector that do not match the input element (in this case nextCard) to the front of the vector.
+		// Then, the erase method is called on the vector, where the tail of the vector now contains all elements that match the input that need to be erased, which then get removed.
+
+		cardPool.erase(remove(cardPool.begin(), cardPool.end(), nextCard), cardPool.end());
+
+		// increment rigged index
+
+		currentRiggedIndex++;
+		
+		// Reset currentRiggedIndex if its greater than length of riggedCardOrder
+
+		if (currentRiggedIndex > (riggedCardOrder.size() - 1)) {
+			currentRiggedIndex = 0;
+		}
+
+	} while (cardsChecked < CardsInPlay.size());
+
+	// Override CardsInPlay with the new ordered vector
+
+	CardsInPlay = newOrder;
+
+}
+
 Card Deck::DrawCard() {
 	// Removes
 	Card SelectedCard = CardsInPlay[0];

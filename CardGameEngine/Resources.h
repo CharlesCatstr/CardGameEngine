@@ -110,3 +110,5 @@ static vector<string> SplitString(string& InString, char ToSplit) {
 
 	return seglist;
 };
+
+static vector<int> riggedCardOrder = { 12, 1, 11, 2, 10, 3, 9, 4, 8, 5, 7, 6 };

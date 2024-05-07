@@ -28,6 +28,10 @@ void BaronessHandler::SetGameActive(bool isActive) {
 	gameIsActive = isActive;
 };
 
+void BaronessHandler::SetDebugMode(bool isDebug) {
+	debugMode = isDebug;
+};
+
 bool BaronessHandler::IsGameActive() {
 	return gameIsActive;
 }
@@ -249,6 +253,12 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 		nextPile.Empty();
 	}
 
+	// If debug mode, set the debug deck order
+
+	if (debugMode) {
+		activeDeck.SetDebugOrder();
+	}
+
 	// Start the game loop
 
 	SetGameActive(true);
@@ -273,8 +283,6 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 
 		// Get the user's choice of action
 
-		cout << "Does 13 exist? " << DoThirteensExist() << "\n\n";
-
 		bool allPilesEmpty = true;
 
 		for (int x = 0; x < numPiles; x++) {
@@ -291,9 +299,11 @@ int BaronessHandler::PlayBaroness(Player& realPlayer) {
 			SetGameActive(false);
 			// End this iteration early so the loop can end without showing user options
 			continue;
-		} else if (DoThirteensExist()) {
-			cout << "\nThere is a possible play this round\n\n";
-		} else if (activeDeck.RemainingCards() <= 0) {
+		//}
+		// remove this debugging that told you if a play was possible as it essentially becomes "easy mode"
+		// else if (DoThirteensExist()) {
+		//	cout << "\nThere is a possible play this round\n\n";
+		} else if (activeDeck.RemainingCards() <= 0 and not DoThirteensExist()) {
 			// The game is impossible and the player loses as there are no plays available and no cards left in the deck
 			cout << "\nThere are no more possible plays left. You lose.\n\n";
 			SetGameActive(false);
